@@ -1,10 +1,9 @@
 package com.neuedu.sell.service;
 
 import com.neuedu.sell.DTO.OrderDTO;
-import com.neuedu.sell.entity.OrderDetail;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 
 public interface OrderService {
     /*创建订单*/
@@ -13,7 +12,7 @@ public interface OrderService {
     OrderDTO findOne(String orderId);
 
     /*根据openId查找订单列表*/
-    Page<OrderDTO> findList(String openId, Package pageable) ;
+    Page<OrderDTO> findList(String openId, Pageable pageable) ;
     /*取消订单*/
     OrderDTO cancel(OrderDTO orderDTO);
     /*完结订单*/

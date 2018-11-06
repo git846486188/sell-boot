@@ -3,6 +3,7 @@ package com.neuedu.sell.service.impl;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.neuedu.sell.DTO.CartDTO;
 import com.neuedu.sell.DTO.OrderDTO;
+import com.neuedu.sell.converter.OrderMasterToOrderDTOConverter;
 import com.neuedu.sell.entity.OrderDetail;
 import com.neuedu.sell.entity.OrderMaster;
 import com.neuedu.sell.entity.ProductInfo;
@@ -17,6 +18,8 @@ import com.neuedu.sell.utill.KeyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,12 +83,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO findOne(String orderId) {
-        return null;
+        OrderMaster orderMaster = orderMasterRepository.findOne(orderId);
+        /*订单不存在*/
+        if (orderMaster==null) {
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderId(orderId);
+        /*订单详情不存在*/
+        if (orderDetailList.size()==0) {
+            throw new SellException(ResultEnum.ORDERDETAIL_NOT_EXIST);
+        }
+        OrderDTO orderDTO = OrderMasterToOrderDTOConverter.OrderMasterToOrderDTOconverter(orderMaster);
+        orderDTO.setOrderDetailList(orderDetailList);
+        return orderDTO;
     }
 
     @Override
-    public Page<OrderDTO> findList(String openId, Package pageable) {
-        return null;
+    public Page<OrderDTO> findList(String openId, Pageable pageable) {
+        Page<OrderMaster> page = orderMasterRepository.findByBuyerOpenid(openId, pageable);
+        List<OrderDTO> orderDTOList = OrderMasterToOrderDTOConverter.MasterListToOrderDTOconverter(page.getContent());
+        return new PageImpl<>(orderDTOList,pageable,page.getTotalElements());
     }
 
     @Override
