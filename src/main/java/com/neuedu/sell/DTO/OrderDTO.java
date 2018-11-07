@@ -1,8 +1,10 @@
 package com.neuedu.sell.DTO;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.neuedu.sell.entity.OrderDetail;
 import com.neuedu.sell.enums.OrderStatusEnum;
 import com.neuedu.sell.enums.PayStatusEnum;
+import com.neuedu.sell.utill.serializer.Data2LongSerializer;
 import lombok.Data;
 
 import javax.print.attribute.standard.PrinterURI;
@@ -30,8 +32,10 @@ public class OrderDTO {
     /*支付状态，0未支付，1已支付*/
     private Integer payStatus= PayStatusEnum.NOT_PAY.getCode();
     /*创建时间*/
+    @JsonSerialize(using = Data2LongSerializer.class)
     private Date createTime;
     /*修改时间*/
+    @JsonSerialize(using = Data2LongSerializer.class)
     private  Date updateTime;
     /*订单信息表的集合*/
     private List<OrderDetail> orderDetailList;

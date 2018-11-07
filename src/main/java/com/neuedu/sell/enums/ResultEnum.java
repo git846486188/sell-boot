@@ -10,7 +10,8 @@ public enum ResultEnum {
     ORDER_NOT_EXIST(3,"订单不存在"),
     ORDERDETAIL_NOT_EXIST(4,"订单详情不存在"),
     ORDER_STATUS_ERROR(5,"订单状态不合法"),
-    PAY_STATUS_ERROR(6,"支付状态不正确");
+    PAY_STATUS_ERROR(6,"支付状态不正确"),
+    PARAM_ERROR(7,"参数异常");
     private Integer code;
     private String message;
     ResultEnum(Integer code, String message) {

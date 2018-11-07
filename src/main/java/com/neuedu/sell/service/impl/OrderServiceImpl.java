@@ -68,8 +68,8 @@ public class OrderServiceImpl implements OrderService {
         /*3数据入库*/
         /*3.1订单主表入库   一个订单里可能有多个商品*/
         OrderMaster orderMaster = new OrderMaster();
+        orderDTO.setOrderId(orderId);
         BeanUtils.copyProperties(orderDTO, orderMaster);
-        orderMaster.setOrderId(orderId);
         orderMaster.setOrderAmount(orderAmount);
         orderMasterRepository.save(orderMaster);
         /*4扣库存*/
@@ -78,7 +78,6 @@ public class OrderServiceImpl implements OrderService {
             cartDTOList.add(new CartDTO(orderDetail.getProductId(), orderDetail.getProductQuantity()));
         }
         productInfoService.decreaseStock(cartDTOList);
-
         return orderDTO;
     }
 
@@ -139,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
             productInfoRepository.save(productInfo);
         }
         /*如果支付，返还前*/
-
+        orderDTO.setBuyerOpenid(orderMaster.getBuyerOpenid());
         return orderDTO;
     }
 
