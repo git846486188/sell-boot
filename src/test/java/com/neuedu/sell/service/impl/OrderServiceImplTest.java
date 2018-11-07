@@ -2,7 +2,6 @@ package com.neuedu.sell.service.impl;
 
 import com.neuedu.sell.DTO.OrderDTO;
 import com.neuedu.sell.entity.OrderDetail;
-import com.neuedu.sell.entity.OrderMaster;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +40,28 @@ public class OrderServiceImplTest {
         System.out.println(orderDTO);
     }
     @Test
-    public void findList(){
+    public void findListTest(){
         Page<OrderDTO> page = orderService.findList("微信openid", new PageRequest(0, 2));
         for (OrderDTO orderDTO : page.getContent()) {
             System.out.println(orderDTO);
         }
+
+    }
+    @Test
+    public void cancelTest(){
+        OrderDTO orderDTO = orderService.findOne("1541470310258136500");
+        orderService.cancel(orderDTO);
+    }
+    @Test
+    public void finishTest(){
+        OrderDTO orderDTO=orderService.findOne("123456789");
+        orderService.finish(orderDTO);
+
+    }
+    @Test
+    public void paidTest(){
+        OrderDTO orderDTO=orderService.findOne("123456789");
+        orderService.paid(orderDTO);
+
     }
 }

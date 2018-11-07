@@ -14,14 +14,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class ProductInfoServiceImpl implements ProductInfoService {
     @Autowired
     ProductInfoRepository productInfoRepository;
+
     @Override
     public List<ProductInfo> findByUpAll() {
         return productInfoRepository.findByProductStatus(ProductStatusEnum.UP.getCode());
     }
+
     @Override
     public Page<ProductInfo> findAll(Pageable pageable) {
         return productInfoRepository.findAll(pageable);
@@ -38,21 +41,39 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
+    /*删库存*/
     public void decreaseStock(List<CartDTO> cartDTOList) {
         for (CartDTO cartDTO : cartDTOList) {
-            ProductInfo productInfo=productInfoRepository.findOne(cartDTO.getProductId());
-           if(productInfo==null){
-             throw   new SellException(ResultEnum.PRODUCT_NOT_EXIST);
-           }
-           if(cartDTO.getProductQuantity()<=0){
-               throw  new SellException(ResultEnum.QUANTITY_NOT_LEGAL);
-           }
-           if(cartDTO.getProductQuantity()>productInfo.getProductStock()){
-               throw  new SellException(ResultEnum.STOCK_NOT_ENOUGH);
-           }
-           //扣库存
-            productInfo.setProductStock(productInfo.getProductStock()-cartDTO.getProductQuantity());
+            ProductInfo productInfo = productInfoRepository.findOne(cartDTO.getProductId());
+            if (productInfo == null) {
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            if (cartDTO.getProductQuantity() <= 0) {
+                throw new SellException(ResultEnum.QUANTITY_NOT_LEGAL);
+            }
+            if (cartDTO.getProductQuantity() > productInfo.getProductStock()) {
+                throw new SellException(ResultEnum.STOCK_NOT_ENOUGH);
+            }
+            //扣库存
+            productInfo.setProductStock(productInfo.getProductStock() - cartDTO.getProductQuantity());
             productInfoRepository.save(productInfo);
         }
+    }
+
+    @Override
+    /*加库存*/
+    public void increaseStock(List<CartDTO> cartDTOList) {
+       /* for (CartDTO cartDTO : cartDTOList) {
+            ProductInfo productInfo = productInfoRepository.findOne(cartDTO.getProductId());
+            if (productInfo == null) {
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            if (cartDTO.getProductQuantity() <= 0) {
+                throw new SellException(ResultEnum.QUANTITY_NOT_LEGAL);
+            }
+            //加库存
+            productInfo.setProductStock(productInfo.getProductStock() + cartDTO.getProductQuantity());
+            productInfoRepository.save(productInfo);
+        }*/
     }
 }

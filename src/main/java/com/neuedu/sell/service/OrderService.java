@@ -10,7 +10,6 @@ public interface OrderService {
     OrderDTO create(OrderDTO orderDTO);
     /*根据订单id来查找*/
     OrderDTO findOne(String orderId);
-
     /*根据openId查找订单列表*/
     Page<OrderDTO> findList(String openId, Pageable pageable) ;
     /*取消订单*/
