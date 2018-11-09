@@ -2,6 +2,7 @@ package com.neuedu.sell.service.impl;
 
 import com.neuedu.sell.DTO.CartDTO;
 import com.neuedu.sell.DTO.OrderDTO;
+import com.neuedu.sell.converter.OrderFormToOrderDTOConverter;
 import com.neuedu.sell.converter.OrderMasterToOrderDTOConverter;
 import com.neuedu.sell.entity.OrderDetail;
 import com.neuedu.sell.entity.OrderMaster;
@@ -138,6 +139,7 @@ public class OrderServiceImpl implements OrderService {
             productInfoRepository.save(productInfo);
         }
         /*如果支付，返还前*/
+
         orderDTO.setBuyerOpenid(orderMaster.getBuyerOpenid());
         return orderDTO;
     }
@@ -145,11 +147,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO finish(OrderDTO orderDTO) {
         /*1.查询订单*/
-        OrderMaster orderMaster=orderMasterRepository.findOne(orderDTO.getOrderId());
+        OrderMaster orderMaster = orderMasterRepository.findOne(orderDTO.getOrderId());
         /*2.判断订单状态*/
         if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())) {
-             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
-            }
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
         /*3.修改状态*/
         orderMaster.setOrderStatus(OrderStatusEnum.FINISHED.getCode());
         /*4.保存*/
@@ -160,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO paid(OrderDTO orderDTO) {
         /*查订单*/
-        OrderMaster orderMaster=orderMasterRepository.findOne(orderDTO.getOrderId());
+        OrderMaster orderMaster = orderMasterRepository.findOne(orderDTO.getOrderId());
         /*判断支付状态*/
         if (orderMaster.getPayStatus().equals(PayStatusEnum.PAID.getCode())) {
             throw new SellException(ResultEnum.PAY_STATUS_ERROR);
@@ -170,5 +172,15 @@ public class OrderServiceImpl implements OrderService {
         /*保存*/
         orderMasterRepository.save(orderMaster);
         return orderDTO;
+    }
+
+    @Override
+    public Page<OrderDTO> findList(Pageable pageable) {
+        /*商家findAll方法*/
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findAll(pageable);
+        /*orderMasterList转orderDTOList*/
+        List<OrderDTO> orderDTOList = OrderMasterToOrderDTOConverter.MasterListToOrderDTOconverter(orderMasterPage.getContent());
+        /*返回page类型数据*/
+        return new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
     }
 }

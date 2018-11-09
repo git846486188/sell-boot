@@ -7,10 +7,7 @@ import com.neuedu.sell.entity.OrderDetail;
 import com.neuedu.sell.enums.ResultEnum;
 import com.neuedu.sell.exception.SellException;
 import com.neuedu.sell.form.OrderForm;
-import com.sun.org.apache.xml.internal.dtm.ref.sax2dtm.SAX2DTM2;
-import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderFormToOrderDTOConverter {

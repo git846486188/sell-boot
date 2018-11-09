@@ -1,16 +1,12 @@
 package com.neuedu.sell.DTO;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.neuedu.sell.entity.OrderDetail;
 import com.neuedu.sell.enums.OrderStatusEnum;
 import com.neuedu.sell.enums.PayStatusEnum;
+import com.neuedu.sell.utill.StatusEnumUtil;
 import com.neuedu.sell.utill.serializer.Data2LongSerializer;
 import lombok.Data;
-
-import javax.print.attribute.standard.PrinterURI;
 import java.math.BigDecimal;
-import java.security.PrivateKey;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,4 +35,14 @@ public class OrderDTO {
     private  Date updateTime;
     /*订单信息表的集合*/
     private List<OrderDetail> orderDetailList;
+    /*获取订单状态*/
+    public  OrderStatusEnum getOrderStatusEnum(){
+        /*根据OrderStatus的值来返回OrderStatusEnum*/
+
+        return StatusEnumUtil.getEnumByCode(orderStatus,OrderStatusEnum.class);
+    }
+    /*获取支付状态*/
+    public  PayStatusEnum getPayStatusEnum(){
+        return StatusEnumUtil.getEnumByCode(payStatus,PayStatusEnum.class);
+    }
 }
